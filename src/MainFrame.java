@@ -88,6 +88,7 @@ public class MainFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e){
+       try{ 
         for(int i=0; i<10;i++){
             if(e.getSource()==numberButtons[i]){
                 textField.setText(textField.getText().concat(String.valueOf(i)));
@@ -130,8 +131,9 @@ public class MainFrame implements ActionListener{
                     result=num1*num2;
                     break;
                 case '/':
-                    result=num1/num2;
-                    break;
+                        result=num1/num2;
+                        break;
+                    
             }
             textField.setText(String.valueOf(result));
             num1=result;
@@ -146,6 +148,10 @@ public class MainFrame implements ActionListener{
                 textField.setText(textField.getText()+string.charAt(i));
             }
         }
-       
+        
+       }
+       catch(Exception E){
+        System.out.println(E);
+       }
     }
 }
