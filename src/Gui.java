@@ -1,14 +1,17 @@
 import java.awt.event.*;
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
 class calculator extends JFrame implements ActionListener {
 	static Frame farme;
     static JTextField textField;
     static JButton[] numberButtons=new JButton[10];
     static JButton[] funcButtons = new JButton[8];
-    static JButton addButton, subButton, mulButton, divButton,decButton,equButton, delButton,clrButton;
+    static JButton addButton, subButton, mulButton, divButton,decButton,equButton,clrButton,hisButton;
     static JPanel panel;
 	String s0, s1, s2;
+	static String t1,t2,t3,t4,t5;
+	static String[] h=new String[10];
     
 	calculator()
 	{
@@ -35,7 +38,6 @@ class calculator extends JFrame implements ActionListener {
 
 		// create a textfield
 		farme=new JFrame("Calculator");
-        //farme.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         farme.setSize(420, 550); 
         farme.setLayout(null);
 
@@ -49,8 +51,8 @@ class calculator extends JFrame implements ActionListener {
         divButton=new JButton("/");
         decButton=new JButton(".");
         equButton=new JButton("=");
-        delButton=new JButton("Delete");
         clrButton=new JButton("Clear");
+		hisButton=new JButton("History");
 
         funcButtons[0]=addButton;
         funcButtons[1]=subButton;
@@ -58,8 +60,8 @@ class calculator extends JFrame implements ActionListener {
         funcButtons[3]=divButton;
         funcButtons[4]=decButton;
         funcButtons[5]=equButton;
-        funcButtons[6]=delButton;
-        funcButtons[7]=clrButton;
+        funcButtons[6]=clrButton;
+		funcButtons[7]=hisButton;
 
         for(int i=0; i<8;i++){
             funcButtons[i].addActionListener(c);
@@ -71,8 +73,8 @@ class calculator extends JFrame implements ActionListener {
             numberButtons[i].addActionListener(c);
             numberButtons[i].setFocusable(false);
         }
-        delButton.setBounds(50,430,145,50);
-        clrButton.setBounds(205,430,145,50);
+        clrButton.setBounds(50,430,145,50);
+		hisButton.setBounds(200,430,145,50);
 
         panel=new JPanel();
         panel.setBounds(50, 100, 300, 300);
@@ -97,8 +99,8 @@ class calculator extends JFrame implements ActionListener {
         panel.add(divButton);
 
         farme.add(panel);
-        farme.add(delButton);
         farme.add(clrButton);
+		farme.add(hisButton);
         farme.add(textField);
         farme.setVisible(true);
 	}
@@ -107,7 +109,7 @@ class calculator extends JFrame implements ActionListener {
 		String s = e.getActionCommand();
 
 		// if the value is a number
-		if ((s.charAt(0) >= '0' && s.charAt(0) <= '9') || s.charAt(0) == '.') {
+		try{if ((s.charAt(0) >= '0' && s.charAt(0) <= '9') || s.charAt(0) == '.') {
 			// if operand is present then add to second no
 			if (!s1.equals(""))
 				s2 = s2 + s;
@@ -141,10 +143,21 @@ class calculator extends JFrame implements ActionListener {
 			// set the value of text
 			textField.setText(s0 + s1 + s2 + "=" + te);
 
+			CalculatorHistory.addHistoryEntry(textField.getText());
+
+
 			// convert it to string
 			s0 = Double.toString(te);
 
 			s1 = s2 = "";
+		}
+		else if(s.charAt(0)=='H'){
+				ArrayList<String> history = CalculatorHistory.getHistory();
+                StringBuilder historyText = new StringBuilder("Calculation History:\n");
+                for (String entry : history) {
+                    historyText.append(entry).append("\n");
+                }
+                JOptionPane.showMessageDialog(farme, historyText.toString(), "History", JOptionPane.INFORMATION_MESSAGE);
 		}
 		else {
 			// if there was no operand
@@ -162,8 +175,8 @@ class calculator extends JFrame implements ActionListener {
 				else if (s1.equals("/"))
 					te = (Double.parseDouble(s0) / Double.parseDouble(s2));
 				else
-					te = (Double.parseDouble(s0) * Double.parseDouble(s2));
-
+					te =(Double.parseDouble(s0) * Double.parseDouble(s2));
+					t2=Double.toString(te);
 				// convert it to string
 				s0 = Double.toString(te);
 
@@ -172,10 +185,36 @@ class calculator extends JFrame implements ActionListener {
 
 				// make the operand blank
 				s2 = "";
+				//history(Double.toString(te));
 			}
 
 			// set the value of text
 			textField.setText(s0 + s1 + s2);
-		}
+
+			// String input = textField.getText();
+            // //double result = te;
+			// CalculatorHistory.addHistoryEntry(input);
+			
+			
+		}}catch(Exception ex){System.out.println(ex);}
 	}
+	
 }
+
+// class CalculatorHistory {
+//     private static ArrayList<String> history = new ArrayList<>();
+
+//     public static void addHistoryEntry(String entry) {
+//         history.add(entry);
+//     }
+
+//     public static ArrayList<String> getHistory() {
+//         return history;
+//     }
+// }
+
+
+
+
+
+
